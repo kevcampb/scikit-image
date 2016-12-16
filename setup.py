@@ -73,6 +73,7 @@ def configuration(parent_package='', top_path=None):
 
 
 if __name__ == "__main__":
+
     try:
         from numpy.distutils.core import setup
         extra = {'configuration': configuration}
@@ -88,8 +89,7 @@ if __name__ == "__main__":
         if len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
                                    sys.argv[1] in ('--help-commands',
                                                    '--version',
-                                                   'clean',
-                                                   'egg_info')):
+                                                   'clean')):
             # For these actions, NumPy is not required.
             #
             # They are required to succeed without Numpy for example when
@@ -104,6 +104,12 @@ if __name__ == "__main__":
                   'Or use your operating system package manager. For more\n' +
                   'details, see http://scikit-image.org/docs/stable/install.html')
             sys.exit(1)
+
+    # Used when we run egg_info or other similar commands. Try and return info
+    # even if required dependencies for scikit-image are not present
+    if len(sys.argv) >= 2 and sys.argv[1] == 'egg_info':
+        from setuptools import setup
+        extra = {}
 
     setup(
         name=DISTNAME,
